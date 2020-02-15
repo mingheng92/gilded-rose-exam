@@ -29,18 +29,19 @@ class GildedRose
     @items.each do |item|
       #Quality logic start
       if item.name != Sulfuras
-        if item.name != Aged_Brie && item.name != Backstage && item.name != Conjured
-          if item.quality > 0
-            update_quality_value(item, -1)
-          end
-        elsif item.name == Conjured
+        case item.name
+        when Conjured
           if item.quality > 0
             update_quality_value(item, -2)
           end
-        elsif item.name == Backstage
+        when Backstage
           update_backstage(item)
-        else
+        when Aged_Brie
           update_quality_value(item, 1)
+        else
+          if item.quality > 0
+            update_quality_value(item, -1)
+          end
         end
       end
       #Quality logic end
@@ -54,18 +55,19 @@ class GildedRose
       #When sell_in has passed, item start degrade
       if item.sell_in < 0
         if item.name != Sulfuras
-          if item.name == Aged_Brie
+          case item.name
+          when Conjured
+            if item.quality > 0
+              update_quality_value(item, -2)
+            end
+          when Backstage
+            item.quality = update_quality_value(item, -item.quality)
+          when Aged_Brie
             update_quality_value(item, 1)
-          elsif item.name == Backstage
-            item.quality = item.quality - item.quality
           else
             if item.quality > 0
-              if item.name == Conjured
-                update_quality_value(item, -2)
-              else
-                update_quality_value(item, -1)
-              end
-            end  
+              update_quality_value(item, -1)
+            end
           end
         end
       end
