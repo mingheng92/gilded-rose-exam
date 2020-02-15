@@ -38,6 +38,25 @@ describe GildedRose do
       end
     end
 
+    #Conjured Start
+    context "when item name is 'Conjured'" do
+      let(:name) { 'Conjured' }
+
+      it "lowers the quality by 2" do
+        expect(item.quality).to eq 8
+      end
+
+      context "when sell by date has passed" do
+        let(:initial_sell_in) { -1 }
+  
+        it "quality degrades twice as fast as normal items" do
+          expect(item.quality).to eq 6 # from 10 it goes to 6
+        end
+      end
+      
+    end
+    #Conjured End
+
     context "when item name is 'Aged Brie'" do
       let(:name) { 'Aged Brie' }
 
