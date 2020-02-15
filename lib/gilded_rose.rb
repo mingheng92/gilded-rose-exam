@@ -6,42 +6,39 @@ class GildedRose
     @items = items
   end
 
+  #function to +/- quality value
+  def update_quality_value(item, qvalue)
+    if item.quality < 50
+      item.quality = item.quality + qvalue
+    end
+  end
+
+  #function to update backstage quality
+  def update_backstage (item)
+    if item.sell_in < 11 && item.sell_in > 5
+      update_quality_value(item, 2)
+    elsif item.sell_in < 6 && item.sell_in > 0
+      update_quality_value(item, 3)
+    elsif item.sell_in > 0
+      update_quality_value(item, 1)
+    end
+  end
+
   def update_quality
     @items.each do |item|
-      #Quality logic for normal item
-      if item.name != Aged_Brie && item.name != Backstage
-        if item.quality > 0
-          if item.name != Sulfuras
-            item.quality -= 1
+      #Quality logic start
+      if item.name != Sulfuras
+        if item.name != Aged_Brie && item.name != Backstage
+          if item.quality > 0
+            update_quality_value(item, -1)
           end
+        elsif item.name == Backstage
+          update_backstage(item)
+        else
+          update_quality_value(item, 1)
         end
-      else
-
-        #Quality logic for item Aged Brie, Backstage and Sulfuras
-        if item.quality < 50
-          item.quality += 1
-          
-          #Backstage item quality logic
-          if item.name == Backstage
-            if item.sell_in < 11
-              if item.quality < 50
-                item.quality += 1
-              end
-            end
-            if item.sell_in < 6
-              if item.quality < 50
-                item.quality += 1
-              end
-            end
-          end
-          #End of Backstage item quality logic
-
-        end
-        #End of Quality logic for item Aged Brie, Backstage and Sulfuras
-
       end
-      #End of Quality logic for normal item
-      
+      #Quality logic end
 
       #All item sell_in will decrease by 1 each day except for Sulfuras 
       if item.name != Sulfuras
@@ -52,15 +49,13 @@ class GildedRose
       #When sell_in has passed, item start degrade
       if item.sell_in < 0
         if item.name == Aged_Brie
-          if item.quality < 50
-            item.quality += 1
-          end
+          update_quality_value(item, 1)
         elsif item.name == Backstage
           item.quality = item.quality - item.quality
         else
           if item.quality > 0
             if item.name != Sulfuras
-              item.quality -= 1
+              update_quality_value(item, -1)
             end
           end  
         end
